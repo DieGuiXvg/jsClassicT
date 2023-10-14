@@ -342,43 +342,22 @@ class Controller {
         this.kc_rot_left = 90;
         this.kc_rot_right = 88;
         this.kc_soft_drop = 40;
-
-        this.key_pressed = {};
-        this.key_press = {};
-    }
-
-    register() {
-        const that = this;
-
-        window.addEventListener("keydown", (e) => {that.input_down(e);});
-        window.addEventListener("keyup", (e) => {that.input_up(e);});
-    }
-
-    input_down(e) {
-        if(!e.repeat){
-            this.key_pressed[e.keyCode] = true;
-            this.key_press[e.keyCode] = 0;
-        }        
-    }
-    
-    input_up(e) {
-        this.key_pressed[e.keyCode] = false;
     }
 
     input_just_press(key){
-        if(this.key_pressed[key]){
-            this.key_press[key]++;
-            if(this.key_press[key] == 1){
+        if(kb_key_pressed[key]){
+            kb_key_press[key]++;
+            if(kb_key_press[key] == 1){
                 return true;
             }
         } else {
-            this.key_press[key] = 0;
+            kb_key_press[key] = 0;
         }
         return false;
     }
 
     inpunt_pressed(key){
-        return this.key_pressed[key];
+        return kb_key_pressed[key];
     }
 }
 
@@ -386,12 +365,28 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
+window.addEventListener("keydown", kb_input_down);
+window.addEventListener("keyup", kb_input_up);
+
+let kb_key_pressed = {};
+let kb_key_press = {};
+
+function kb_input_down(e) {
+    if(!e.repeat){
+        kb_key_pressed[e.keyCode] = true;
+        kb_key_press[e.keyCode] = 0;
+    }    
+}
+
+function kb_input_up(e) {
+    kb_key_pressed[e.keyCode] = false;
+}
+
 let blocks = [];
 let level = 5;
 
 let p = new Piece(grid*3,-grid*1,getRandomInt(7),0);
 let c = new Controller();
-c.register();
 
 let speed = 4;
 let soft_drop = 2;
@@ -417,7 +412,6 @@ let frames = 0;
 
 
 function draw(){
-    frames++;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     for(let i=0; i < blocks.length; i++){
@@ -508,7 +502,7 @@ function draw(){
             p.y += grid;
             down = grid;
         } else {
-            c.key_pressed[c.kc_soft_drop] = false;
+            kb_key_pressed[c.kc_soft_drop] = false;
             p.set_blocks();
             for(let i=0; i < blocks.length; i++){
                 if(blocks[i].y <= 0) {
@@ -569,9 +563,6 @@ function draw(){
         }
     }
 
-    //console.log(das_counter);
-   
-
     if(c.input_just_press(c.kc_rot_left) && p.can_rotate(-1)){
         p.pos--;
     } else if(c.input_just_press(c.kc_rot_right) && p.can_rotate(+1)){
@@ -585,10 +576,6 @@ function draw_next() {
     next_ctx.clearRect(0, 0, next.width, next.height);
     p.show_next();
 }
-
-setInterval(() => {
-    console.log(frames)
-  }, 1000)
 
 draw();
 draw_next();
