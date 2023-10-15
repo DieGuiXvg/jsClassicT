@@ -337,14 +337,20 @@ class Piece {
 
 class Controller {
     constructor() {
-        this.kc_move_left = 37;
-        this.kc_move_right = 39;
-        this.kc_rot_left = 90;
-        this.kc_rot_right = 88;
-        this.kc_soft_drop = 40;
+        this.kb_move_left = 37;
+        this.kb_move_right = 39;
+        this.kb_rot_left = 90;
+        this.kb_rot_right = 88;
+        this.kb_soft_drop = 40;
+
+        this.gp_move_left = 14;
+        this.gp_move_right = 15;
+        this.gp_rot_left = 2;
+        this.gp_rot_right = 0;
+        this.gp_soft_drop = 13;
     }
 
-    input_just_press(key){
+    input_just_press(key,gp){
         if(kb_key_pressed[key]){
             kb_key_press[key]++;
             if(kb_key_press[key] == 1){
@@ -353,11 +359,27 @@ class Controller {
         } else {
             kb_key_press[key] = 0;
         }
+
+        if(game_pad != 0){
+            if(game_pad.buttons[gp].pressed) {
+                game_pad_press[gp]++;
+                if(game_pad_press[gp] == 1){
+                return true;
+                }
+            } else {
+                game_pad_press[gp] = 0;
+            }
+        }
         return false;
     }
 
-    inpunt_pressed(key){
-        return kb_key_pressed[key];
+    inpunt_pressed(key,gp){
+        if(game_pad != 0){
+            return kb_key_pressed[key] || game_pad.buttons[gp].pressed;
+        } else {
+            return kb_key_pressed[key];
+        }
+        
     }
 }
 
@@ -380,6 +402,23 @@ function kb_input_down(e) {
 
 function kb_input_up(e) {
     kb_key_pressed[e.keyCode] = false;
+}
+
+window.addEventListener("gamepadconnected", gp_tester);
+window.addEventListener("gamepaddisconnected", gp_off);
+
+let game_pad = 0;
+let game_pad_press = {};
+let game_pad_id;
+
+function gp_tester(e) {
+    game_pad = e.gamepad
+    game_pad_id = e.gamepad.index;
+}
+
+function gp_off() {
+    game_pad = 0;
+    delete game_pad_id;
 }
 
 let blocks = [];
@@ -413,6 +452,10 @@ let frames = 0;
 
 function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if(game_pad != 0) {
+        game_pad = navigator.getGamepads()[game_pad_id];
+    }
     
     for(let i=0; i < blocks.length; i++){
         if(blocks[i] != 0){
@@ -491,7 +534,7 @@ function draw(){
     draw_next();
     count--;
 
-    if(count > soft_drop && c.input_just_press(c.kc_soft_drop)){
+    if(count > soft_drop && c.input_just_press(c.kb_soft_drop, c.gp_soft_drop)){
         count = soft_drop;
     }
 
@@ -502,7 +545,7 @@ function draw(){
             p.y += grid;
             down = grid;
         } else {
-            kb_key_pressed[c.kc_soft_drop] = false;
+            kb_key_pressed[c.kb_soft_drop] = false;
             p.set_blocks();
             for(let i=0; i < blocks.length; i++){
                 if(blocks[i].y <= 0) {
@@ -516,21 +559,21 @@ function draw(){
             requestAnimationFrame(draw);
             return;
         }
-        if(c.inpunt_pressed(c.kc_soft_drop)){
+        if(c.inpunt_pressed(c.kb_soft_drop, c.gp_soft_drop)){
             count = soft_drop;
         } else {
             count = speed;
         }
     }
 
-    if(c.input_just_press(c.kc_move_left)){
+    if(c.input_just_press(c.kb_move_left, c.gp_move_left)){
         if(p.can_move(-grid, down)){
             p.x -= grid;
             das_counter = 0;
         } else {
             das_counter = das_max;
         }
-    } else if(c.input_just_press(c.kc_move_right)){
+    } else if(c.input_just_press(c.kb_move_right, c.gp_move_right)){
         if(p.can_move(grid, down)){
             p.x += grid;
             das_counter = 0;
@@ -539,7 +582,7 @@ function draw(){
         }
     }
 
-    if(c.inpunt_pressed(c.kc_move_left)){
+    if(c.inpunt_pressed(c.kb_move_left, c.gp_move_left)){
         if(p.can_move(-grid, down)){
             if(das_counter == das_max){
                 p.x -= grid;
@@ -550,7 +593,7 @@ function draw(){
         } else {
             das_counter = das_max;
         }
-    } else if(c.inpunt_pressed(c.kc_move_right)){
+    } else if(c.inpunt_pressed(c.kb_move_right, c.gp_move_right)){
         if(p.can_move(grid, down)){
             if(das_counter == das_max){
                 p.x += grid;
@@ -563,9 +606,9 @@ function draw(){
         }
     }
 
-    if(c.input_just_press(c.kc_rot_left) && p.can_rotate(-1)){
+    if(c.input_just_press(c.kb_rot_left, c.gp_rot_left) && p.can_rotate(-1)){
         p.pos--;
-    } else if(c.input_just_press(c.kc_rot_right) && p.can_rotate(+1)){
+    } else if(c.input_just_press(c.kb_rot_right, c.gp_rot_right) && p.can_rotate(+1)){
         p.pos++;
     }
    
