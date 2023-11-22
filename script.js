@@ -424,12 +424,12 @@ function gp_off() {
 }
 
 let blocks = [];
-let level = 15;
+let level = 8;
 
 let p = new Piece(grid*3,-grid*1,getRandomInt(7),0);
 let c = new Controller();
 
-let speed = 4;
+let speed = 8;
 let soft_drop = 2;
 let count = 64;
 
@@ -453,7 +453,7 @@ let frames = 0;
 
 const scoring = [0,40,100,300,1200];
 let score = 0;
-
+let push_down_point = 0;
 
 function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -551,6 +551,9 @@ function draw(){
         if(p.can_move(0,grid)){
             p.y += grid;
             down = grid;
+            if(c.inpunt_pressed(c.kb_soft_drop, c.gp_soft_drop)){
+                push_down_point++;
+            }
         } else {
             kb_key_pressed[c.kb_soft_drop] = false;
             p.set_blocks();
@@ -563,6 +566,8 @@ function draw(){
             p.reset();
             delay = 18 - Math.floor((p.landing_height / grid)/4)*2;
             count = speed;
+            score += push_down_point;
+            push_down_point = 0;
             requestAnimationFrame(draw);
             return;
         }
