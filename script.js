@@ -5,6 +5,8 @@ const skin = document.getElementById("skin");
 const next = document.getElementById("next");
 const next_ctx = next.getContext("2d");
 
+const text = document.getElementById("score")
+
 const grid = 16;
 
 ctx.imageSmoothingEnabled = false;
@@ -152,7 +154,7 @@ class Block {
       this.x = x;
       this.y = y;
       this.color = color;
-      this.level_color = level;
+      this.level_color = level - Math.floor(level/10)*10;
     }
 
     show() {
@@ -422,7 +424,7 @@ function gp_off() {
 }
 
 let blocks = [];
-let level = 5;
+let level = 15;
 
 let p = new Piece(grid*3,-grid*1,getRandomInt(7),0);
 let c = new Controller();
@@ -449,9 +451,13 @@ let delay = delay_amount;
 
 let frames = 0;
 
+const scoring = [0,40,100,300,1200];
+let score = 0;
+
 
 function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    text.innerHTML = score;
 
     if(game_pad != 0) {
         game_pad = navigator.getGamepads()[game_pad_id];
@@ -523,6 +529,7 @@ function draw(){
             deleter_a = deleter_start_a;
             deleter_b = deleter_start_b;
             lines = [];
+            score += scoring[line_clear] * (level + 1);
             line_clear = 0;
         }
         delay = delay_amount;
@@ -622,3 +629,5 @@ function draw_next() {
 
 draw();
 draw_next();
+
+console.log(text);
