@@ -424,20 +424,21 @@ function gp_off() {
 }
 
 let blocks = [];
-let level = 8;
+let level = 15;
 
 let p = new Piece(grid*3,-grid*1,getRandomInt(7),0);
 let c = new Controller();
 
-let speed = 8;
+const speeds = [48,43,38,33,28,23,18,13,8,6,5,5,5,4,4,4,3,3,3,2,2,2,2,2,2,2,2,2,2,1];
+let speed = speeds[level];
 let soft_drop = 2;
 let count = 64;
 
 let line_clear = 0;
 let lines = [];
 
-let das_max = 16;
-let das_min = 11;
+let das_max = 15;
+let das_min = 10;
 let das_counter = 0;
 
 const deleter_start_a = 4;
@@ -545,7 +546,7 @@ function draw(){
         count = soft_drop;
     }
 
-    let down = 0;
+    /* i never */ let /* you */ down = 0;
 
     if(count == 0) {
         if(p.can_move(0,grid)){
