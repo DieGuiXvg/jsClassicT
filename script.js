@@ -6,14 +6,17 @@ const grid = 16;
 
 ctx.imageSmoothingEnabled = false;
 
-function updateSize() {
+/*function updateSize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
 
 updateSize();
 
-window.addEventListener("resize", updateSize);
+window.addEventListener("resize", updateSize);*/
+
+canvas.width = 960;
+canvas.height = 540;
 
 const T = [[
     [0,0,0,0],
@@ -297,7 +300,7 @@ class Piece {
         }
 
         for(let i=0; i < blocks.length; i++){
-            board[(blocks[i].y - this.game_board.y) / grid][(blocks[i].x - this.game_board.x) / grid] = i++;
+            board[(blocks[i].y - this.game_board.y) / grid][(blocks[i].x - this.game_board.x) / grid] = i+1;
         }
 
         for(let i=0; i < board.length; i++){
@@ -469,7 +472,7 @@ function gp_off() {
 
 let blocks = [];
 let level = 15;
-let game_board = new Game_Board(32,32);
+let game_board = new Game_Board(336,96);
 let next_box = new Next_Box(game_board.x + grid * 11, game_board.y + grid * 0);
 
 let p = new Piece(game_board.x + grid*3,game_board.y - grid*1,getRandomInt(7),0,game_board,next_box);
@@ -543,7 +546,8 @@ function draw(){
     
             for(let i=0; i < blocks.length; i++){
                 if(blocks[i] != 0) {
-                    board[blocks[i].y / grid][blocks[i].x / grid] = i+1;
+                    //board[blocks[i].y / grid][blocks[i].x / grid] = i+1;
+                    board[(blocks[i].y - game_board.y) / grid][(blocks[i].x - game_board.x) / grid] = i+1;
                 }
             }
             
