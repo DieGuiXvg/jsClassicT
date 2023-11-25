@@ -1,23 +1,16 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clasic Tetris in JavaScript</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <main>
-        <p id="score">texto de prueba</p>
-        <div id="game_area">
-            <canvas id="canvas"></canvas>
-            <canvas id="next"></canvas>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Clasic Tetris in JavaScript</title>
+    </head>
+    <body style="margin: 0px; background-color: rgb(48,48,48);">
+        <canvas id="canvas"></canvas>
+        
+        <div style="display: none;">
+            <img id="skin" src="img/skins.png" width="48" height="160">
         </div>
-    </main>
-    
-    <div style="display: none;">
-        <img id="skin" src="img/skins.png" width="48" height="160">
-    </div>
-    <script src="script.js"></script>
-</body>
+        <script src="script.js"></script>
+    </body>
 </html>
