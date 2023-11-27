@@ -15,8 +15,8 @@ updateSize();
 
 window.addEventListener("resize", updateSize);*/
 
-canvas.width = 960;
-canvas.height = 540;
+canvas.width = 640;
+canvas.height = 480;
 
 const T = [[
     [0,0,0,0],
@@ -472,7 +472,7 @@ function gp_off() {
 
 let blocks = [];
 let level = 15;
-let game_board = new Game_Board(336,96);
+let game_board = new Game_Board(200,104);
 let next_box = new Next_Box(game_board.x + grid * 11, game_board.y + grid * 0);
 
 let p = new Piece(game_board.x + grid*3,game_board.y - grid*1,getRandomInt(7),0,game_board,next_box);
