@@ -19,112 +19,55 @@ canvas.width = 640;
 canvas.height = 480;
 
 const T = [[
-    [0,0,0,0],
-    [1,1,1,0],
-    [0,1,0,0],
-    [0,0,0,0]
+    [0,1],[1,1],[2,1],[1,2]
 ],[
-    [0,1,0,0],
-    [1,1,0,0],
-    [0,1,0,0],
-    [0,0,0,0]
+    [1,0],[0,1],[1,1],[1,2]
 ],[
-    [0,1,0,0],
-    [1,1,1,0],
-    [0,0,0,0],
-    [0,0,0,0]
+    [1,0],[0,1],[1,1],[2,1]
 ],[
-    [0,1,0,0],
-    [0,1,1,0],
-    [0,1,0,0],
-    [0,0,0,0]
+    [1,0],[1,1],[1,2],[2,1]
 ]];
 
 const J = [[
-    [0,0,0,0],
-    [1,1,1,0],
-    [0,0,1,0],
-    [0,0,0,0]
+    [0,1],[1,1],[2,1],[2,2]
 ],[
-    [0,1,0,0],
-    [0,1,0,0],
-    [1,1,0,0],
-    [0,0,0,0]
+    [1,0],[1,1],[1,2],[0,2]
 ],[
-    [1,0,0,0],
-    [1,1,1,0],
-    [0,0,0,0],
-    [0,0,0,0]
+    [0,0],[0,1],[1,1],[2,1]
 ],[
-    [0,1,1,0],
-    [0,1,0,0],
-    [0,1,0,0],
-    [0,0,0,0]
+    [1,0],[2,0],[1,1],[1,2]
 ]];
 
 const Z = [[
-    [0,0,0,0],
-    [1,1,0,0],
-    [0,1,1,0],
-    [0,0,0,0]
+    [0,1],[1,1],[1,2],[2,2]
 ],[
-    [0,0,1,0],
-    [0,1,1,0],
-    [0,1,0,0],
-    [0,0,0,0]
+    [2,0],[1,1],[2,1],[1,2]
 ]];
 
 const O = [[
-    [0,0,0,0],
-    [0,1,1,0],
-    [0,1,1,0],
-    [0,0,0,0]
+    [1,1],[2,1],[1,2],[2,2]
 ]];
 
 const S = [[
-    [0,0,0,0],
-    [0,1,1,0],
-    [1,1,0,0],
-    [0,0,0,0]
+    [0,2],[1,2],[1,1],[2,1]
 ],[
-    [0,1,0,0],
-    [0,1,1,0],
-    [0,0,1,0],
-    [0,0,0,0]
+    [1,0],[1,1],[2,1],[2,2]
 ]];
 
 const L = [[
-    [0,0,0,0],
-    [1,1,1,0],
-    [1,0,0,0],
-    [0,0,0,0]
+    [0,1],[1,1],[2,1],[0,2]
 ],[
-    [1,1,0,0],
-    [0,1,0,0],
-    [0,1,0,0],
-    [0,0,0,0]
+    [0,0],[1,0],[1,1],[1,2]
 ],[
-    [0,0,1,0],
-    [1,1,1,0],
-    [0,0,0,0],
-    [0,0,0,0]
+    [2,0],[0,1],[1,1],[2,1]
 ],[
-    [0,1,0,0],
-    [0,1,0,0],
-    [0,1,1,0],
-    [0,0,0,0]
+    [1,0],[1,1],[1,2],[2,2]
 ]];
 
 const I = [[
-    [0,0,0,0],
-    [1,1,1,1],
-    [0,0,0,0],
-    [0,0,0,0]
+    [0,1],[1,1],[2,1],[3,1]
 ],[
-    [0,0,1,0],
-    [0,0,1,0],
-    [0,0,1,0],
-    [0,0,1,0]
+    [2,0],[2,1],[2,2],[2,3]
 ]];
 
 let board = [
@@ -326,17 +269,10 @@ class Piece {
             this.pos = this.shape[this.type].length-1;
         }
 
-        let count = 0;
-
         for(let i=0; i < this.shape[this.type][this.pos].length; i++){
-            for(let k=0; k < this.shape[this.type][this.pos][i].length; k++){
-                if(this.shape[this.type][this.pos][i][k]){
-                    this.blocks[count].x = this.x+grid*k;
-                    this.blocks[count].y = this.y+grid*i;
-                    this.blocks[count].show();
-                    count++;
-                }
-            }
+            this.blocks[i].x = this.x + this.shape[this.type][this.pos][i][0] * grid; 
+            this.blocks[i].y = this.y + this.shape[this.type][this.pos][i][1] * grid;
+            this.blocks[i].show();
         }
     }
 
@@ -366,16 +302,12 @@ class Piece {
         }
 
         for(let i=0; i < this.shape[this.type][rot_dir].length; i++){
-            for(let k=0; k < this.shape[this.type][rot_dir][i].length; k++){
-                if(this.shape[this.type][rot_dir][i][k]){
-                    if(this.x + grid*k < this.game_board.x || this.x + grid*k == this.game_board.x + this.game_board.width || this.y + grid*i == this.game_board.y + this.game_board.height) {
-                        return false;
-                    }
-                    for(let j=0; j < blocks.length; j++) {
-                        if(this.x + grid*k == blocks[j].x && this.y + grid*i == blocks[j].y){
-                            return false;
-                        }
-                    }
+            if(this.x + grid*this.shape[this.type][rot_dir][i][0] < this.game_board.x || this.x + grid*this.shape[this.type][rot_dir][i][0] == this.game_board.x + this.game_board.width || this.y + grid*this.shape[this.type][rot_dir][i][1] == this.game_board.y + this.game_board.height) {
+                return false;
+            }
+            for(let j=0; j < blocks.length; j++) {
+                if(this.x + grid*this.shape[this.type][rot_dir][i][0] == blocks[j].x && this.y + grid*this.shape[this.type][rot_dir][i][1] == blocks[j].y){
+                    return false;
                 }
             }
         }
@@ -422,7 +354,7 @@ class Controller {
         return false;
     }
 
-    inpunt_pressed(key,gp){
+    input_pressed(key,gp){
         if(game_pad != 0){
             return kb_key_pressed[key] || game_pad.buttons[gp].pressed;
         } else {
@@ -604,7 +536,7 @@ function draw(){
         if(p.can_move(0,grid)){
             p.y += grid;
             down = grid;
-            if(c.inpunt_pressed(c.kb_soft_drop, c.gp_soft_drop)){
+            if(c.input_pressed(c.kb_soft_drop, c.gp_soft_drop)){
                 push_down_point++;
             }
         } else {
@@ -624,7 +556,7 @@ function draw(){
             requestAnimationFrame(draw);
             return;
         }
-        if(c.inpunt_pressed(c.kb_soft_drop, c.gp_soft_drop)){
+        if(c.input_pressed(c.kb_soft_drop, c.gp_soft_drop)){
             count = soft_drop;
         } else {
             count = speed;
@@ -647,7 +579,7 @@ function draw(){
         }
     }
 
-    if(c.inpunt_pressed(c.kb_move_left, c.gp_move_left)){
+    if(c.input_pressed(c.kb_move_left, c.gp_move_left)){
         if(p.can_move(-grid, down)){
             if(das_counter == das_max){
                 p.x -= grid;
@@ -658,7 +590,7 @@ function draw(){
         } else {
             das_counter = das_max;
         }
-    } else if(c.inpunt_pressed(c.kb_move_right, c.gp_move_right)){
+    } else if(c.input_pressed(c.kb_move_right, c.gp_move_right)){
         if(p.can_move(grid, down)){
             if(das_counter == das_max){
                 p.x += grid;
