@@ -1,129 +1,73 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-const skin = document.getElementById("skin");
+const skin = document.getElementById("skin24");
 
-const next = document.getElementById("next");
-const next_ctx = next.getContext("2d");
-
-const text = document.getElementById("score")
-
-const grid = 16;
+const grid = 24;
 
 ctx.imageSmoothingEnabled = false;
 
-canvas.width = grid * 10;
-canvas.height = grid * 20;
+/*function updateSize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
 
-next.width = grid * 4;
-next.height = grid * 4;
+updateSize();
+
+window.addEventListener("resize", updateSize);*/
+
+canvas.width = 360;
+canvas.height = 640;
 
 const T = [[
-    [0,0,0,0],
-    [1,1,1,0],
-    [0,1,0,0],
-    [0,0,0,0]
+    [0,1],[1,1],[2,1],[1,2]
 ],[
-    [0,1,0,0],
-    [1,1,0,0],
-    [0,1,0,0],
-    [0,0,0,0]
+    [1,0],[0,1],[1,1],[1,2]
 ],[
-    [0,1,0,0],
-    [1,1,1,0],
-    [0,0,0,0],
-    [0,0,0,0]
+    [1,0],[0,1],[1,1],[2,1]
 ],[
-    [0,1,0,0],
-    [0,1,1,0],
-    [0,1,0,0],
-    [0,0,0,0]
+    [1,0],[1,1],[1,2],[2,1]
 ]];
 
 const J = [[
-    [0,0,0,0],
-    [1,1,1,0],
-    [0,0,1,0],
-    [0,0,0,0]
+    [0,1],[1,1],[2,1],[2,2]
 ],[
-    [0,1,0,0],
-    [0,1,0,0],
-    [1,1,0,0],
-    [0,0,0,0]
+    [1,0],[1,1],[1,2],[0,2]
 ],[
-    [1,0,0,0],
-    [1,1,1,0],
-    [0,0,0,0],
-    [0,0,0,0]
+    [0,0],[0,1],[1,1],[2,1]
 ],[
-    [0,1,1,0],
-    [0,1,0,0],
-    [0,1,0,0],
-    [0,0,0,0]
+    [1,0],[2,0],[1,1],[1,2]
 ]];
 
 const Z = [[
-    [0,0,0,0],
-    [1,1,0,0],
-    [0,1,1,0],
-    [0,0,0,0]
+    [0,1],[1,1],[1,2],[2,2]
 ],[
-    [0,0,1,0],
-    [0,1,1,0],
-    [0,1,0,0],
-    [0,0,0,0]
+    [2,0],[1,1],[2,1],[1,2]
 ]];
 
 const O = [[
-    [0,0,0,0],
-    [0,1,1,0],
-    [0,1,1,0],
-    [0,0,0,0]
+    [1,1],[2,1],[1,2],[2,2]
 ]];
 
 const S = [[
-    [0,0,0,0],
-    [0,1,1,0],
-    [1,1,0,0],
-    [0,0,0,0]
+    [0,2],[1,2],[1,1],[2,1]
 ],[
-    [0,1,0,0],
-    [0,1,1,0],
-    [0,0,1,0],
-    [0,0,0,0]
+    [1,0],[1,1],[2,1],[2,2]
 ]];
 
 const L = [[
-    [0,0,0,0],
-    [1,1,1,0],
-    [1,0,0,0],
-    [0,0,0,0]
+    [0,1],[1,1],[2,1],[0,2]
 ],[
-    [1,1,0,0],
-    [0,1,0,0],
-    [0,1,0,0],
-    [0,0,0,0]
+    [0,0],[1,0],[1,1],[1,2]
 ],[
-    [0,0,1,0],
-    [1,1,1,0],
-    [0,0,0,0],
-    [0,0,0,0]
+    [2,0],[0,1],[1,1],[2,1]
 ],[
-    [0,1,0,0],
-    [0,1,0,0],
-    [0,1,1,0],
-    [0,0,0,0]
+    [1,0],[1,1],[1,2],[2,2]
 ]];
 
 const I = [[
-    [0,0,0,0],
-    [1,1,1,1],
-    [0,0,0,0],
-    [0,0,0,0]
+    [0,1],[1,1],[2,1],[3,1]
 ],[
-    [0,0,1,0],
-    [0,0,1,0],
-    [0,0,1,0],
-    [0,0,1,0]
+    [2,0],[2,1],[2,2],[2,3]
 ]];
 
 let board = [
@@ -149,11 +93,40 @@ let board = [
     [0,0,0,0,0,0,0,0,0,0],
 ];
 
+class Game_Board {
+    constructor(x,y){
+        this.x = x;
+        this.y = y;
+        this.width = grid * 10;
+        this.height = grid * 20;
+    }
+
+    show(){
+        ctx.fillStyle = "black"
+        ctx.fillRect(this.x,this.y,this.width,this.height);
+     }
+}
+
+class Next_Box {
+    constructor(x,y){
+        this.x = x;
+        this.y = y;
+        this.width = grid * 4;
+        this.height = grid * 4;
+    }
+
+    show(){
+        ctx.fillStyle = "black"
+        ctx.fillRect(this.x,this.y,this.width,this.height); 
+    }
+}
+
 class Block {
-    constructor(x,y,color){
+    constructor(x,y,color, game_board){
       this.x = x;
       this.y = y;
       this.color = color;
+      this.game_board = game_board;
       this.level_color = level - Math.floor(level/10)*10;
     }
 
@@ -163,12 +136,8 @@ class Block {
         ctx.drawImage(skin,this.color*grid,this.level_color*grid,grid,grid,this.x,this.y,grid,grid);
     }
 
-    show_next() {
-        next_ctx.drawImage(skin,this.color*grid,this.level_color*grid,grid,grid,this.x,this.y,grid,grid);
-    }
-
     can_move(future_x, future_y){
-        if(this.x + future_x >= 0 && this.x + future_x < canvas.width && this.y + future_y < canvas.height) {
+        if(this.x + future_x >= this.game_board.x && this.x + future_x < this.game_board.x + this.game_board.width && this.y + future_y < this.game_board.y + this.game_board.height) {
             for(let i=0; i < blocks.length; i++){
                 if(this.x + future_x == blocks[i].x && this.y + future_y == blocks[i].y){
                     return false;
@@ -180,13 +149,53 @@ class Block {
     }
 }
 
+class Next_Piece {
+    constructor(next_box,type,game_board) {
+        this.next_box = next_box;
+        this.type = type;
+        this.game_board = game_board;
+        this.x = this.next_box.x;
+        this.y = this.next_box.y;
+
+        this.color = [0,2,1,0,2,1,0];
+
+        this.shape = [
+            [[0.5, 1.0],[1.5, 1.0],[2.5, 1.0],[1.5, 2.0]], // T
+            [[0.5, 1.0],[1.5, 1.0],[2.5, 1.0],[2.5, 2.0]], // J
+            [[0.5, 1.0],[1.5, 1.0],[1.5, 2.0],[2.5, 2.0]], // Z
+            [[1.0, 1.0],[2.0, 1.0],[1.0, 2.0],[2.0, 2.0]], // O
+            [[0.5, 2.0],[1.5, 2.0],[1.5, 1.0],[2.5, 1.0]], // S
+            [[0.5, 1.0],[1.5, 1.0],[2.5, 1.0],[0.5, 2.0]], // L
+            [[0.0, 1.5],[1.0, 1.5],[2.0, 1.5],[3.0, 1.5]]  // I
+        ];
+
+        this.blocks = [
+            new Block(this.x, this.y, this.color[this.type],this.game_board),
+            new Block(this.x, this.y, this.color[this.type],this.game_board),
+            new Block(this.x, this.y, this.color[this.type],this.game_board),
+            new Block(this.x, this.y, this.color[this.type],this.game_board)
+        ];
+    }
+
+    show() {
+        for(let i=0; i < this.blocks.length; i++) {
+            this.blocks[i].color = this.color[this.type];
+            this.blocks[i].x = this.next_box.x + this.shape[this.type][i][0] * grid;
+            this.blocks[i].y = this.next_box.y + this.shape[this.type][i][1] * grid;
+            this.blocks[i].show();
+        }
+    }
+}
+
 
 class Piece {
-    constructor(x,y,type,pos){
+    constructor(x,y,type,pos,game_board,next_box){
         this.x = x;
         this.y = y;
         this.type = type;
         this.pos = pos;
+        this.game_board = game_board;
+        this.next_box = next_box;
 
         this.next = getRandomInt(7);
 
@@ -194,41 +203,34 @@ class Piece {
         this.color = [0,2,1,0,2,1,0];
 
         this.blocks = [
-            new Block(this.x, this.y, this.color[this.type]),
-            new Block(this.x, this.y, this.color[this.type]),
-            new Block(this.x, this.y, this.color[this.type]),
-            new Block(this.x, this.y, this.color[this.type])
+            new Block(this.x, this.y, this.color[this.type],this.game_board),
+            new Block(this.x, this.y, this.color[this.type],this.game_board),
+            new Block(this.x, this.y, this.color[this.type],this.game_board),
+            new Block(this.x, this.y, this.color[this.type],this.game_board)
         ];
 
-        this.next_blocks = [
-            new Block(0, 0, this.color[this.next]),
-            new Block(0, 0, this.color[this.next]),
-            new Block(0, 0, this.color[this.next]),
-            new Block(0, 0, this.color[this.next])
-        ];
+        this.next_piece = new Next_Piece(this.next_box, this.next, this.game_board);
 
         this.landing_height = 0;
     }
 
     reset() {
-        this.x = grid*3;
-        this.y = -grid*1;
+        this.x = this.game_board.x + grid*3;
+        this.y = this.game_board.y - grid*1;
 
         this.type = this.next;
         this.pos = 0;
         
         this.blocks = [
-            new Block(this.x, this.y, this.color[this.type]),
-            new Block(this.x, this.y, this.color[this.type]),
-            new Block(this.x, this.y, this.color[this.type]),
-            new Block(this.x, this.y, this.color[this.type])
+            new Block(this.x, this.y, this.color[this.type],this.game_board),
+            new Block(this.x, this.y, this.color[this.type],this.game_board),
+            new Block(this.x, this.y, this.color[this.type],this.game_board),
+            new Block(this.x, this.y, this.color[this.type],this.game_board)
         ];
 
         this.next = getRandomInt(7);
 
-        for(let i=0; i < this.next_blocks.length; i++){
-            this.next_blocks[i].color = this.color[this.next];
-        }
+        this.next_piece.type = this.next;
     }
 
     set_blocks() {
@@ -241,7 +243,7 @@ class Piece {
         }
 
         for(let i=0; i < blocks.length; i++){
-            board[blocks[i].y / grid][blocks[i].x / grid] = i+1;
+            board[(blocks[i].y - this.game_board.y) / grid][(blocks[i].x - this.game_board.x) / grid] = i+1;
         }
 
         for(let i=0; i < board.length; i++){
@@ -267,34 +269,15 @@ class Piece {
             this.pos = this.shape[this.type].length-1;
         }
 
-        let count = 0;
-
         for(let i=0; i < this.shape[this.type][this.pos].length; i++){
-            for(let k=0; k < this.shape[this.type][this.pos][i].length; k++){
-                if(this.shape[this.type][this.pos][i][k]){
-                    this.blocks[count].x = this.x+grid*k;
-                    this.blocks[count].y = this.y+grid*i;
-                    this.blocks[count].show();
-                    count++;
-                }
-            }
+            this.blocks[i].x = this.x + this.shape[this.type][this.pos][i][0] * grid; 
+            this.blocks[i].y = this.y + this.shape[this.type][this.pos][i][1] * grid;
+            this.blocks[i].show();
         }
     }
 
     show_next() {
-
-        let count = 0;
-
-        for(let i=0; i < this.shape[this.next][0].length; i++){
-            for(let k=0; k < this.shape[this.next][0][i].length; k++){
-                if(this.shape[this.next][0][i][k]){
-                    this.next_blocks[count].x = grid*k;
-                    this.next_blocks[count].y = grid*i;
-                    this.next_blocks[count].show_next();
-                    count++;
-                }
-            }
-        }
+        this.next_piece.show();
     }
 
     can_move(future_x, future_y) {
@@ -319,16 +302,12 @@ class Piece {
         }
 
         for(let i=0; i < this.shape[this.type][rot_dir].length; i++){
-            for(let k=0; k < this.shape[this.type][rot_dir][i].length; k++){
-                if(this.shape[this.type][rot_dir][i][k]){
-                    if(this.x + grid*k < 0 || this.x + grid*k == canvas.width || this.y + grid*i == canvas.height) {
-                        return false;
-                    }
-                    for(let j=0; j < blocks.length; j++) {
-                        if(this.x + grid*k == blocks[j].x && this.y + grid*i == blocks[j].y){
-                            return false;
-                        }
-                    }
+            if(this.x + grid*this.shape[this.type][rot_dir][i][0] < this.game_board.x || this.x + grid*this.shape[this.type][rot_dir][i][0] == this.game_board.x + this.game_board.width || this.y + grid*this.shape[this.type][rot_dir][i][1] == this.game_board.y + this.game_board.height) {
+                return false;
+            }
+            for(let j=0; j < blocks.length; j++) {
+                if(this.x + grid*this.shape[this.type][rot_dir][i][0] == blocks[j].x && this.y + grid*this.shape[this.type][rot_dir][i][1] == blocks[j].y){
+                    return false;
                 }
             }
         }
@@ -375,7 +354,7 @@ class Controller {
         return false;
     }
 
-    inpunt_pressed(key,gp){
+    input_pressed(key,gp){
         if(game_pad != 0){
             return kb_key_pressed[key] || game_pad.buttons[gp].pressed;
         } else {
@@ -425,8 +404,10 @@ function gp_off() {
 
 let blocks = [];
 let level = 15;
+let game_board = new Game_Board(grid/3,grid);
+let next_box = new Next_Box(game_board.x + grid * 10 + grid/3, game_board.y + grid * 0);
 
-let p = new Piece(grid*3,-grid*1,getRandomInt(7),0);
+let p = new Piece(game_board.x + grid*3,game_board.y - grid*1,getRandomInt(7),0,game_board,next_box);
 let c = new Controller();
 
 const speeds = [48,43,38,33,28,23,18,13,8,6,5,5,5,4,4,4,3,3,3,2,2,2,2,2,2,2,2,2,2,1];
@@ -458,7 +439,10 @@ let push_down_point = 0;
 
 function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    text.innerHTML = score;
+    game_board.show();
+    next_box.show();
+    p.show_next();
+    //text.innerHTML = score;
 
     if(game_pad != 0) {
         game_pad = navigator.getGamepads()[game_pad_id];
@@ -494,7 +478,8 @@ function draw(){
     
             for(let i=0; i < blocks.length; i++){
                 if(blocks[i] != 0) {
-                    board[blocks[i].y / grid][blocks[i].x / grid] = i+1;
+                    //board[blocks[i].y / grid][blocks[i].x / grid] = i+1;
+                    board[(blocks[i].y - game_board.y) / grid][(blocks[i].x - game_board.x) / grid] = i+1;
                 }
             }
             
@@ -539,7 +524,6 @@ function draw(){
     }
     
     p.show();
-    draw_next();
     count--;
 
     if(count > soft_drop && c.input_just_press(c.kb_soft_drop, c.gp_soft_drop)){
@@ -552,14 +536,14 @@ function draw(){
         if(p.can_move(0,grid)){
             p.y += grid;
             down = grid;
-            if(c.inpunt_pressed(c.kb_soft_drop, c.gp_soft_drop)){
+            if(c.input_pressed(c.kb_soft_drop, c.gp_soft_drop)){
                 push_down_point++;
             }
         } else {
             kb_key_pressed[c.kb_soft_drop] = false;
             p.set_blocks();
             for(let i=0; i < blocks.length; i++){
-                if(blocks[i].y <= 0) {
+                if(blocks[i].y <= game_board.y) {
                     console.log("game over kid");
                     return;
                 }
@@ -572,7 +556,7 @@ function draw(){
             requestAnimationFrame(draw);
             return;
         }
-        if(c.inpunt_pressed(c.kb_soft_drop, c.gp_soft_drop)){
+        if(c.input_pressed(c.kb_soft_drop, c.gp_soft_drop)){
             count = soft_drop;
         } else {
             count = speed;
@@ -595,7 +579,7 @@ function draw(){
         }
     }
 
-    if(c.inpunt_pressed(c.kb_move_left, c.gp_move_left)){
+    if(c.input_pressed(c.kb_move_left, c.gp_move_left)){
         if(p.can_move(-grid, down)){
             if(das_counter == das_max){
                 p.x -= grid;
@@ -606,7 +590,7 @@ function draw(){
         } else {
             das_counter = das_max;
         }
-    } else if(c.inpunt_pressed(c.kb_move_right, c.gp_move_right)){
+    } else if(c.input_pressed(c.kb_move_right, c.gp_move_right)){
         if(p.can_move(grid, down)){
             if(das_counter == das_max){
                 p.x += grid;
@@ -628,12 +612,4 @@ function draw(){
     requestAnimationFrame(draw);
 }
 
-function draw_next() {
-    next_ctx.clearRect(0, 0, next.width, next.height);
-    p.show_next();
-}
-
 draw();
-draw_next();
-
-console.log(text);
