@@ -1,8 +1,8 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-const skin = document.getElementById("skin");
+const skin = document.getElementById("skin24");
 
-const grid = 16;
+const grid = 24;
 
 ctx.imageSmoothingEnabled = false;
 
@@ -15,8 +15,8 @@ updateSize();
 
 window.addEventListener("resize", updateSize);*/
 
-canvas.width = 640;
-canvas.height = 480;
+canvas.width = 360;
+canvas.height = 640;
 
 const T = [[
     [0,1],[1,1],[2,1],[1,2]
@@ -404,8 +404,8 @@ function gp_off() {
 
 let blocks = [];
 let level = 15;
-let game_board = new Game_Board(200,104);
-let next_box = new Next_Box(game_board.x + grid * 11, game_board.y + grid * 0);
+let game_board = new Game_Board(grid/3,grid);
+let next_box = new Next_Box(game_board.x + grid * 10 + grid/3, game_board.y + grid * 0);
 
 let p = new Piece(game_board.x + grid*3,game_board.y - grid*1,getRandomInt(7),0,game_board,next_box);
 let c = new Controller();
