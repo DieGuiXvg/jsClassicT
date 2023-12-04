@@ -1,6 +1,6 @@
 const skin_grid = 8;
 
-let grid = 24;
+let grid = 16;
 
 const T = [[
     [0,1],[1,1],[2,1],[1,2]
@@ -236,13 +236,13 @@ class Piece {
         }
 
         for(let i=0; i < board.length; i++){
-            let line = 0;
+            let _line = 0;
             for(let k=0; k < board[i].length; k++){
                 if(board[i][k] != 0){
-                    line++
+                    _line++
                 }
             }
-            if(line == 10){
+            if(_line == 10){
                 lines.push(board[i]);
                 line_clear++;
             }
@@ -376,7 +376,7 @@ const deleter_start_b = 5;
 const scoring = [0,40,100,300,1200];
 
 function setup() {
-	createCanvas(windowWidth, windowHeight);
+	createCanvas(400, 400);
 	game_board = new Game_Board(grid, grid);
 	next_box = new Next_Box(game_board.x + grid * 10 + grid, game_board.y + grid * 5);
 	c = new Controller();
@@ -412,6 +412,10 @@ function draw() {
 	game_board.show();
 	next_box.show();
 	p.show_next();
+ 
+    text(displayWidth, 300, 16);
+    text(displayHeight, 300, 32);
+    text(deviceOrientation, 300, 48);
     
     for(let i=0; i < blocks.length; i++){
         if(blocks[i] != 0){
@@ -447,7 +451,7 @@ function draw() {
                 }
             }
             
-            let line = 0;
+            let _line = 0;
 
             for(let i = board.length-1; i >= 0; i--){
                 let space = 0;
@@ -457,11 +461,11 @@ function draw() {
                     }
                 }
                 if(space == 10){
-                    line++;
+                    _line++;
                 } else {
                     for(let k = 0; k < board[i].length; k++){
                         if(board[i][k] != 0){
-                            blocks[board[i][k]-1].y += grid*line;
+                            blocks[board[i][k]-1].y += grid*_line;
                         }
                     }
                 }
@@ -508,6 +512,7 @@ function draw() {
             for(let i=0; i < blocks.length; i++){
                 if(blocks[i].y <= game_board.y) {
                     console.log("game over kid");
+                    noLoop();
                     return;
                 }
             }
@@ -573,11 +578,12 @@ function draw() {
    
 }
 
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-}
-
-function deviceTurned() {
-    resizeCanvas(windowWidth, windowHeight);
-    console.log(deviceOrientation);
-}
+/*function windowResized() {
+    if(deviceOrientation === 'landscape') {
+        resizeCanvas(displayWidth, displayHeight);
+    } else if(deviceOrientation === 'portrait') {
+        resizeCanvas(displayWidth, displayHeight);
+    } else {
+        resizeCanvas(windowWidth, windowHeight);
+    }
+  }*/
