@@ -575,9 +575,9 @@ function draw() {
 
 /*function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
-}*/
+}
 
 function deviceTurned() {
     resizeCanvas(windowWidth, windowHeight);
     console.log(deviceOrientation);
-}
+}*/
