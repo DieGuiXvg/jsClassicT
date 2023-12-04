@@ -2,21 +2,19 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const skin = document.getElementById("skin24");
 
-const grid = 24;
+let element_grid = 24;
+let grid = 24;
 
 ctx.imageSmoothingEnabled = false;
 
-/*function updateSize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+window.visualViewport.addEventListener("resize", updateSize)
+
+function updateSize() {
+    canvas.width = window.visualViewport.width;
+    canvas.height = window.visualViewport.height;
 }
 
 updateSize();
-
-window.addEventListener("resize", updateSize);*/
-
-canvas.width = 360;
-canvas.height = 640;
 
 const T = [[
     [0,1],[1,1],[2,1],[1,2]
@@ -131,9 +129,9 @@ class Block {
     }
 
     show() {
-        //ctx.fillStyle = "white"
-        //ctx.fillRect(this.x, this.y, grid, grid);
-        ctx.drawImage(skin,this.color*grid,this.level_color*grid,grid,grid,this.x,this.y,grid,grid);
+        ctx.fillStyle = "white"
+        ctx.fillRect(this.x, this.y, grid, grid);
+        //ctx.drawImage(skin,this.color*element_grid,this.level_color*element_grid,element_grid,element_grid,this.x,this.y,grid,grid);
     }
 
     can_move(future_x, future_y){
