@@ -367,7 +367,7 @@ function keyReleased() {
 }
 
 let blocks = [];
-let level = 15;
+let level = 8;
 const speeds = [48,43,38,33,28,23,18,13,8,6,5,5,5,4,4,4,3,3,3,2,2,2,2,2,2,2,2,2,2,1];
 
 const deleter_start_a = 4;
@@ -376,7 +376,7 @@ const deleter_start_b = 5;
 const scoring = [0,40,100,300,1200];
 
 function setup() {
-	createCanvas(400, 400);
+	createCanvas(displayWidth, displayHeight);
 	game_board = new Game_Board(grid, grid);
 	next_box = new Next_Box(game_board.x + grid * 10 + grid, game_board.y + grid * 5);
 	c = new Controller();
