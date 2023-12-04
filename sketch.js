@@ -376,7 +376,7 @@ const deleter_start_b = 5;
 const scoring = [0,40,100,300,1200];
 
 function setup() {
-	createCanvas(displayWidth, displayHeight);
+	createCanvas(400, 400);
 	game_board = new Game_Board(grid, grid);
 	next_box = new Next_Box(game_board.x + grid * 10 + grid, game_board.y + grid * 5);
 	c = new Controller();
@@ -407,14 +407,18 @@ function setup() {
 	p = new Piece(game_board.x + grid*3,game_board.y - grid*1,random([0,1,2,3,4,5,6]),0,game_board,next_box);
 }
 
+function deviceTurned() {
+    resizeCanvas(windowWidth, windowHeight);
+}
+
 function draw() {
 	background(220);
 	game_board.show();
 	next_box.show();
 	p.show_next();
  
-    text(displayWidth, 300, 16);
-    text(displayHeight, 300, 32);
+    text(windowWidth, 300, 16);
+    text(windowHeight, 300, 32);
     text(deviceOrientation, 300, 48);
     
     for(let i=0; i < blocks.length; i++){
