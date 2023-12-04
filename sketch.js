@@ -1,3 +1,5 @@
+const skin_grid = 8;
+
 let grid = 24;
 
 const T = [[
@@ -110,24 +112,16 @@ function preload() {
     skin = loadImage("img/skin8.png");
 }
 
-let skin_grid = 8;
-
 class Block {
     constructor(x,y,color, game_board){
       this.x = x;
       this.y = y;
       this.color = color;
       this.game_board = game_board;
-      this.level_color = level - Math.floor(level/10)*10;
+      this.level_color = level - floor(level/10)*10;
     }
 
     show() {
-    	//fill(255);
-    	//noStroke();
-    	//rect(this.x,this.y,grid,grid);
-        //ctx.fillStyle = "white"
-        //ctx.fillRect(this.x, this.y, grid, grid);
-        //ctx.drawImage(skin,this.color*element_grid,this.level_color*element_grid,element_grid,element_grid,this.x,this.y,grid,grid);
         noSmooth();
         image(skin,this.x,this.y,grid,grid,this.color*skin_grid,this.level_color*skin_grid,skin_grid,skin_grid);
     }
@@ -376,32 +370,12 @@ let blocks = [];
 let level = 15;
 const speeds = [48,43,38,33,28,23,18,13,8,6,5,5,5,4,4,4,3,3,3,2,2,2,2,2,2,2,2,2,2,1];
 
-let soft_drop = 2;
-let count = 64;
-
-let line_clear = 0;
-let lines = [];
-
-let das_max = 15;
-let das_min = 10;
-let das_counter = 0;
-
 const deleter_start_a = 4;
 const deleter_start_b = 5;
 
-let deleter_a = deleter_start_a;
-let deleter_b = deleter_start_b;
-
-let delay_amount = 2;
-let delay = delay_amount;
-
-let frames = 0;
-
 const scoring = [0,40,100,300,1200];
-let score = 0;
-let push_down_point = 0;
 
-function setup(){
+function setup() {
 	createCanvas(windowWidth, windowHeight);
 	game_board = new Game_Board(grid, grid);
 	next_box = new Next_Box(game_board.x + grid * 10 + grid, game_board.y + grid * 5);
@@ -411,10 +385,29 @@ function setup(){
 	soft_drop = 2;
 	count = 64;
 
+    soft_drop = 2;
+    count = 64;
+
+    line_clear = 0;
+    lines = [];
+
+    das_max = 15;
+    das_min = 10;
+    das_counter = 0;
+
+    deleter_a = deleter_start_a;
+    deleter_b = deleter_start_b;
+
+    delay_amount = 2;
+    delay = delay_amount;
+
+    score = 0;
+    push_down_point = 0;
+
 	p = new Piece(game_board.x + grid*3,game_board.y - grid*1,random([0,1,2,3,4,5,6]),0,game_board,next_box);
 }
 
-function draw(){
+function draw() {
 	background(220);
 	game_board.show();
 	next_box.show();
@@ -581,5 +574,10 @@ function draw(){
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+    resizeCanvas(windowWidth, windowHeight);
+}
+
+function deviceTurned() {
+    resizeCanvas(windowWidth, windowHeight);
+    console.log(deviceOrientation);
 }
