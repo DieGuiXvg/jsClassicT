@@ -577,13 +577,3 @@ function draw() {
     }
    
 }
-
-/*function windowResized() {
-    if(deviceOrientation === 'landscape') {
-        resizeCanvas(displayWidth, displayHeight);
-    } else if(deviceOrientation === 'portrait') {
-        resizeCanvas(displayWidth, displayHeight);
-    } else {
-        resizeCanvas(windowWidth, windowHeight);
-    }
-  }*/
