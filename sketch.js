@@ -106,6 +106,12 @@ class Next_Box {
     }
 }
 
+function preload() {
+    skin = loadImage("img/skin8.png");
+}
+
+let skin_grid = 8;
+
 class Block {
     constructor(x,y,color, game_board){
       this.x = x;
@@ -116,12 +122,14 @@ class Block {
     }
 
     show() {
-    	fill(255);
-    	noStroke();
-    	rect(this.x,this.y,grid,grid);
+    	//fill(255);
+    	//noStroke();
+    	//rect(this.x,this.y,grid,grid);
         //ctx.fillStyle = "white"
         //ctx.fillRect(this.x, this.y, grid, grid);
         //ctx.drawImage(skin,this.color*element_grid,this.level_color*element_grid,element_grid,element_grid,this.x,this.y,grid,grid);
+        noSmooth();
+        image(skin,this.x,this.y,grid,grid,this.color*skin_grid,this.level_color*skin_grid,skin_grid,skin_grid);
     }
 
     can_move(future_x, future_y){
