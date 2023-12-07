@@ -1,8 +1,12 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-const skin = document.getElementById("skin24");
 
-const grid = 24;
+const next = document.getElementById("next");
+const next_ctx = next.getContext("2d");
+
+const skin = document.getElementById("skin8");
+
+const grid = 8;
 
 ctx.imageSmoothingEnabled = false;
 
@@ -15,8 +19,11 @@ updateSize();
 
 window.addEventListener("resize", updateSize);*/
 
-canvas.width = 360;
-canvas.height = 640;
+canvas.width = 80;
+canvas.height = 160;
+
+next.width = 32;
+next.height = 32;
 
 const T = [[
     [0,1],[1,1],[2,1],[1,2]
@@ -116,8 +123,8 @@ class Next_Box {
     }
 
     show(){
-        ctx.fillStyle = "black"
-        ctx.fillRect(this.x,this.y,this.width,this.height); 
+        next_ctx.fillStyle = "black"
+        next_ctx.fillRect(this.x,this.y,this.width,this.height); 
     }
 }
 
@@ -134,6 +141,12 @@ class Block {
         //ctx.fillStyle = "white"
         //ctx.fillRect(this.x, this.y, grid, grid);
         ctx.drawImage(skin,this.color*grid,this.level_color*grid,grid,grid,this.x,this.y,grid,grid);
+    }
+
+    show_next() {
+        //ctx.fillStyle = "white"
+        //ctx.fillRect(this.x, this.y, grid, grid);
+        next_ctx.drawImage(skin,this.color*grid,this.level_color*grid,grid,grid,this.x,this.y,grid,grid);
     }
 
     can_move(future_x, future_y){
@@ -182,7 +195,7 @@ class Next_Piece {
             this.blocks[i].color = this.color[this.type];
             this.blocks[i].x = this.next_box.x + this.shape[this.type][i][0] * grid;
             this.blocks[i].y = this.next_box.y + this.shape[this.type][i][1] * grid;
-            this.blocks[i].show();
+            this.blocks[i].show_next();
         }
     }
 }
@@ -404,8 +417,8 @@ function gp_off() {
 
 let blocks = [];
 let level = 15;
-let game_board = new Game_Board(grid/3,grid);
-let next_box = new Next_Box(game_board.x + grid * 10 + grid/3, game_board.y + grid * 0);
+let game_board = new Game_Board(0,0);
+let next_box = new Next_Box(0,0);
 
 let p = new Piece(game_board.x + grid*3,game_board.y - grid*1,getRandomInt(7),0,game_board,next_box);
 let c = new Controller();
